@@ -36,11 +36,15 @@ select t.collection_id , avg(t2.duration) from T_C t, tracks t2
 	group by t.collection_id
 	
 --исполнители которые не выпускали альбомы в 2020
-select m."name", a."data"  from musicians m, albums a
-	where a."data" not between '2020-01-01' and '2020-12-31' and m.id = a.id ;
+select m.name, a.data from musicians m
+	join m_a ma ON m.id = ma.musicianid
+	join albums a on a.id = ma.album_id
+	where EXTRACT (year from a."data") != '2020';
 
 select c."name"  from musicians m
-	join albums a on m.id = a.id
+	join m_a ma on m.id = ma.musicianid
+	join albums a on a.id = ma.album_id
 	join tracks t on a.id = t.albumid
-	join collectin c on t.id = c.id
-	where m."name" like 'Gene Klien';
+	join t_c tc on t.id = tc.track_id
+	join collectin c on tc.collection_id  = c.id
+	where m."name" like 'Marshall%';
